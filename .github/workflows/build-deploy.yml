@@ -2,7 +2,7 @@ name: Build and push new docker image
 
 on:
   push:
-    branches: [ master ]
+    branches: [ production ]
 
   # adds a "run workflow" button to the page
   workflow_dispatch:
@@ -43,7 +43,7 @@ jobs:
           platforms: linux/amd64,linux/arm64
           context: .
           push: true
-          tags: ghcr.io/jckleiner/notion-backup:latest
+          tags: ghcr.io/datalabfabriek/dl-co-notionbackup:latest
           build-args: |
             PATH_TO_JAR=./target/notion-backup-1.0-SNAPSHOT.jar
 
