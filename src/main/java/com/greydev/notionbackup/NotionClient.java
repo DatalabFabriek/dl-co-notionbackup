@@ -231,7 +231,7 @@ public class NotionClient {
 				}
 			}
 
-			if (result.isSuccess()) {
+			if (result.isSuccess() && StringUtils.isNotBlank(result.getStatus().getExportUrl())) {
 				log.info("Notion API workspace export 'state': '{}', Pages exported so far: {}", result.getState(), result.getStatus().getPagesExported());
 				return Optional.of(result.getStatus().getExportUrl());
 			}
