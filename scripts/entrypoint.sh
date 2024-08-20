@@ -40,7 +40,7 @@ echo "NUMBER_OF_FILES_TO_KEEP=\"$NUMBER_OF_FILES_TO_KEEP\"" >> /datalab/.env
 
 # Start up cron service
 new_cron_job="30 2 * * * /datalab/enqueu.sh > /dev/null 2>&1
-3,18,33,48 * * * * /datalab/download.sh > /dev/null 2>&1
+12 * * * * /datalab/download.sh > /dev/null 2>&1
 0 5 * * * /datalab/delete.sh > /dev/null 2>&1"
 
 # Append the new cron job to the current crontab
