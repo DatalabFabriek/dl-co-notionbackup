@@ -55,4 +55,10 @@ docker service create \
     ghcr.io/datalabfabriek/dl-co-notionbackup:production
 ```
 
+## License
+Datalab uses a lot of open source software. As we care about the open source community, we'd like to contribute back by licensing this simple utility under the GNU General Public License v3.0 (GPL-3.0-only). Feel free to contribute by making a pull request. 
 
+Feel free to open a pull request if you want to contribute. Any and all questions can be directe to [Harmen](mailto:harmen@datalab.nl).
+
+## Previous work
+Originally, we tried to build upon [jckleiner/notion-backup](https://github.com/jckleiner/notion-backup). None of the source code therein is present in this repo, so this code represents a new, original work.
