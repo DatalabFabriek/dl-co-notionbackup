@@ -46,5 +46,8 @@ new_cron_job="30 2 * * * /datalab/enqueu.sh > /dev/null 2>&1
 # Append the new cron job to the current crontab
 echo -e "$new_cron_job" | crontab -
 
+# Start the cron service
+service cron start
+
 # Show the inventory list (gets updated whenever a new file download has started)
 tail -f "$DL_INVENTORY_LIST"
