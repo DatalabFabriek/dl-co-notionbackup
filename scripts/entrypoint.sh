@@ -7,7 +7,7 @@ export DL_PATH="/dlstore"
 export DL_INVENTORY_LIST="$DL_PATH/inventory.txt"
 export DL_LASTENQUEUING_FILE="$DL_PATH/enqueuing.txt"
 export DL_BACKUP_PATH="$DL_PATH/backups"
-export NUMBER_OF_FILES_TO_KEEP=10
+export NUMBER_OF_FILES_TO_KEEP=45
 
 # Create files and folders, if necessary
 [ ! -f "$DL_INVENTORY_LIST" ] && touch "$DL_INVENTORY_LIST"
