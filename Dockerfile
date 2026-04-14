@@ -22,10 +22,7 @@ RUN apt-get update && apt-get install -y wget curl nano unzip jq cron
 RUN mkdir -p /datalab
 COPY scripts/ /datalab/
 RUN chmod +x /datalab/*.sh
-#COPY dev/.env /datalab/
-
-# Reset the workdir
 WORKDIR /datalab
 
 # Start up with this script
-ENTRYPOINT /datalab/entrypoint.sh
+ENTRYPOINT ["/datalab/entrypoint.sh"]

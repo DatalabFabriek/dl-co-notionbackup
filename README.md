@@ -34,6 +34,13 @@ Automatically downloading backups from Notion requires two unique authentication
 
 **NOTE**: if you log out of your account or your session expires naturally, the `NOTION_TOKEN` and `NOTION_FILE_TOKEN` will get invalidated and the backup will fail. In this case you need to obtain new tokens by repeating this process. There is currently no practical way to automize this until Notion decide to add a backup endpoint to their official API, at which point this script will be able to use a proper authentication token.
 
+## Running in development mode
+To run this image in development mode:
+
+1. Copy the `dev/.env.dist` to `dev/.env` and make sure to fill in the right details.
+2. Build and run the container with `dev/build-run.sh`.
+3. The container is now started. You can either wait till the cron job has commenced, or you can enter the container (in a new terminal) via `docker exec -it dl-co-notionbackup bash` and kick of, e.g., `/datalab/download.sh` manually.
+
 ## Installing the image on a VM
 Please execute the following steps on a virtual machine, or anywhere else you want to run this.
 
