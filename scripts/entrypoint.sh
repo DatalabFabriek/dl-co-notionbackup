@@ -15,8 +15,8 @@ export NUMBER_OF_FILES_TO_KEEP=45
 
 # Check .env file existence, if not, create it
 if [ ! -f /datalab/.env ]; then
-    # Create the .env
-    touch /datalab/.env
+    # Create the .env (if mounted file exists, copy that, otherwise create an empty one)
+    [ -f /datalab/mounted.env ] && cp /datalab/mounted.env /datalab/.env || touch /datalab/.env
 
     # Read the secrets
     if [ -f /run/secrets/dl-co-notionbackup-notiontoken ]; then 
@@ -32,11 +32,11 @@ if [ ! -f /datalab/.env ]; then
     fi
 fi
 
-echo "DL_PATH=\"$DL_PATH\"" >> /datalab/.env
-echo "DL_INVENTORY_LIST=\"$DL_INVENTORY_LIST\"" >> /datalab/.env
-echo "DL_LASTENQUEUING_FILE=\"$DL_LASTENQUEUING_FILE\"" >> /datalab/.env
-echo "DL_BACKUP_PATH=\"$DL_BACKUP_PATH\"" >> /datalab/.env
-echo "NUMBER_OF_FILES_TO_KEEP=\"$NUMBER_OF_FILES_TO_KEEP\"" >> /datalab/.env
+echo "export DL_PATH=\"$DL_PATH\"" >> /datalab/.env
+echo "export DL_INVENTORY_LIST=\"$DL_INVENTORY_LIST\"" >> /datalab/.env
+echo "export DL_LASTENQUEUING_FILE=\"$DL_LASTENQUEUING_FILE\"" >> /datalab/.env
+echo "export DL_BACKUP_PATH=\"$DL_BACKUP_PATH\"" >> /datalab/.env
+echo "export NUMBER_OF_FILES_TO_KEEP=\"$NUMBER_OF_FILES_TO_KEEP\"" >> /datalab/.env
 
 # Start up cron service
 new_cron_job="30 2 * * * /datalab/enqueu.sh > /dev/null 2>&1

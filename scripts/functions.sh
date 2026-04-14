@@ -72,25 +72,31 @@ EOF
 get_downloadable_zips_from_notion() {
     # Prepare the payload for the POST request
     local payload="{\"spaceId\":\"${NOTION_SPACE_ID}\",\"size\":20,\"type\":\"unread_and_read\",\"variant\":\"no_grouping\"}"
+    local tmp_json
+    tmp_json=$(mktemp)
 
     # Make the POST request and capture the task ID
-    post "getNotificationLogV2" "$payload" > /tmp/json
+    if post "getNotificationLog" "$payload" > "$tmp_json"; then
+        # Ensure inventory file exists so grep checks are predictable.
+        touch "$DL_INVENTORY_LIST"
 
-    if [ $? -eq 0 ]; then
-        # Use jq to loop through each activity object and assign to variables
+        # Parse activity records defensively because Notion response shape can vary.
         jq -r '
-        .recordMap.activity | 
-        to_entries[] | 
-        # Assign clearer names to parts of the structure
-        .key as $objectId |
-        .value.value as $activity |
-        # Check if the edits contain export-completed
-        select($activity.edits[].type == "export-completed") |
-        # Output the objectId and the link from the first edit
-        "\($objectId) \($activity.edits[0].link)"
-        ' /tmp/json | while read -r objectId link; do
+        (.recordMap.activity // {})
+        | to_entries[]?
+        | .key as $objectId
+        | ((.value.value.value // .value.value // .value // {}) ) as $activity
+        | ((($activity.edits // [])
+          | map(select(.type == "export-completed" and (.link // "") != ""))
+          | .[0].link) // empty) as $link
+        | select($link != "")
+        | "\($objectId)\t\($link)"
+        ' "$tmp_json" | while IFS=$'\t' read -r objectId link; do
 
-            grep "$objectId" "$DL_INVENTORY_LIST" > /dev/null 2> /dev/null
+            [ -z "$objectId" ] && continue
+            [ -z "$link" ] && continue
+
+            grep -qF "$objectId" "$DL_INVENTORY_LIST"
 
             if [ $? -ne 0 ]; then
                 echo "$objectId" >> "$DL_INVENTORY_LIST"
@@ -99,7 +105,19 @@ get_downloadable_zips_from_notion() {
 
         done
 
+        if [ ${PIPESTATUS[0]} -ne 0 ]; then
+            warn "Failed to parse notification log response."
+          warn "Raw notification response follows:"
+          cat "$tmp_json" >&2
+        fi
+
     else
         warn "Failed to get notification log."
+        if [ -s "$tmp_json" ]; then
+        warn "Raw notification response follows:"
+        cat "$tmp_json" >&2
+        fi
     fi
+
+    rm -f "$tmp_json"
 }
